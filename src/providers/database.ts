@@ -2,6 +2,7 @@ export interface TodoItem {
   id: number
   title: string
   completedAt?: Date
+  dueTime: number
 }
 
 export default function () {
@@ -9,6 +10,7 @@ export default function () {
   const getCurrentTodoList = async () => JSON.parse(localStorage.getItem(TODO_LIST_KEY) ?? '[]')
 
   const createTodoItem = async (item: Omit<TodoItem, 'id'>) => {
+    console.log({ item })
     const id = new Date().getTime()
     const currentTodoList = await getCurrentTodoList()
     const newItem = { ...item, id }
@@ -32,7 +34,19 @@ export default function () {
       return currentItem
     })
 
-    return localStorage.setItem(TODO_LIST_KEY, JSON.stringify(newTodoList))
+    localStorage.setItem(TODO_LIST_KEY, JSON.stringify(newTodoList))
+
+    return newTodoList
+  }
+
+  const deleteTodoItem = async (id: number) => {
+    const currentTodoList = await getCurrentTodoList()
+
+    const newTodoList = currentTodoList.filter((item: TodoItem) => item.id !== id)
+
+    localStorage.setItem(TODO_LIST_KEY, JSON.stringify(newTodoList))
+
+    return newTodoList
   }
 
   const completeTodoItem = async (id: number) => {
@@ -48,5 +62,5 @@ export default function () {
     return localStorage.setItem(TODO_LIST_KEY, JSON.stringify(newTodoList))
   }
 
-  return { createTodoItem, editTodoItem, getTodoList, completeTodoItem }
+  return { createTodoItem, editTodoItem, getTodoList, deleteTodoItem, completeTodoItem }
 }

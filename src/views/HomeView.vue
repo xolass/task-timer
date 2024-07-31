@@ -1,9 +1,10 @@
 <template>
-  <main class="flex m-auto min-h-screen min-w-screen bg-primary-50">
-    <div class="flex flex-col w-96 p-8 gap-12">
-      <div class="flex flex-row justify-between h-fit gap-5">
-        <input class="rounded-md border px-2 py-2 flex-1" v-model="newTodoItemTitle" placeholder="Add a todo" />
-        <button @click="addTodoItem(newTodoItemTitle)" class="bg-primary-600 px-4 py-2 rounded-md text-white">Add</button>
+  <main class="m-auto flex min-h-dvh bg-primary-50">
+    <div class="flex w-96 flex-col gap-12 p-8">
+      <div class="flex h-fit flex-row justify-between gap-5">
+        <input class="flex-1 rounded-md border p-2" v-model="newTodoItemTitle" placeholder="Add a todo" />
+        <DueTimeInput v-model:hours="newTodoDueTimeHours" v-model:minutes="newTodoDueTimeMinutes" />
+        <button @click="addTodoItem(newTodoItemTitle, dueTimeInMinutes)" class="rounded-md bg-primary-600 px-4 py-2 text-white">Add</button>
       </div>
       <Suspense>
         <template #default>
@@ -20,25 +21,41 @@
 
 <script setup lang="ts">
 
-import TodoList from '@/components/TodoComponents/TodoList.vue';
+import DueTimeInput from '@/components/DueTimeInput.vue';
+import TodoList from '@/components/TodoComponents/List.vue';
 import database, { type TodoItem } from '@/providers/database';
-import { onBeforeMount, ref } from 'vue';
+import { computed, onBeforeMount, ref } from 'vue';
 
 const db = database()
+
+
 const todoList = ref<TodoItem[]>([])
+const newTodoItemTitle = ref('')
+const newTodoDueTimeHours = ref('')
+const newTodoDueTimeMinutes = ref('')
+const dueTimeInMinutes = computed(() => calculateDueTimeToMinutes(Number(newTodoDueTimeHours.value), Number(newTodoDueTimeMinutes.value)))
 
 async function fetchTodoList() {
   todoList.value = await db.getTodoList()
 }
 
-
-const newTodoItemTitle = ref('')
-
-
-async function addTodoItem(title: string) {
-  const createdItem = await db.createTodoItem({ title })
+async function addTodoItem(title: string, dueTime: number) {
+  const createdItem = await db.createTodoItem({ title, dueTime })
   todoList.value.push(createdItem)
+  resetInputs()
+}
+
+function resetInputs() {
   newTodoItemTitle.value = ''
+  newTodoDueTimeHours.value = ''
+  newTodoDueTimeMinutes.value = ''
+}
+
+function calculateDueTimeToMinutes(hours: number, minutes: number) {
+  const normalizedHours = hours ?? 0
+  const normalizedMinutes = minutes ?? 0
+
+  return normalizedHours * 60 + normalizedMinutes
 }
 
 onBeforeMount(() => {
