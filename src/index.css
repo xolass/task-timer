@@ -1,8 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 @layer base {
   input[type='number']::-webkit-inner-spin-button,
@@ -131,4 +131,18 @@ q:after {
 table {
   border-collapse: collapse;
   border-spacing: 0;
+}
+
+::-webkit-scrollbar-track {
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 9px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 5px;
+  background-color: #188359;
 }

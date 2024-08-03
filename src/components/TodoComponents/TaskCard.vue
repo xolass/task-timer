@@ -1,14 +1,15 @@
 <template>
   <div ref="editPopupTarget" class="relative">
-    <BaseCard class="flex items-center justify-between gap-8 border bg-white px-4 pb-4 pt-6 hover:border-border" @mouseenter="isHovering = true"
+    <BaseCard class="flex items-center justify-between gap-2 border bg-white px-4 pb-4 pt-6 hover:border-border" @mouseenter="isHovering = true"
       @mouseleave="isHovering = false">
       <input class="flex-1 rounded-md border p-2 focus:outline-none" v-if="isEditing" v-model="newValue" />
       <span v-else class="truncate">
         {{ todoItem.title }}
       </span>
-      <span class="absolute right-4 top-2.5 text-xs font-thin text-secondary-200">{{ humanizedDuration }}</span>
+      <span class="absolute right-4 top-2.5 text-xs font-extralight text-secondary-200">{{ humanizedDuration }}</span>
       <PencilSquareIcon v-if="isHovering && !isEditing" class="size-4 shrink-0 text-zinc-900 hover:cursor-pointer hover:text-zinc-600"
         @click="isEditing = true" />
+      <div v-else class="size-4"></div>
     </BaseCard>
     <!-- <EditPopup v-if="isEditing" @save="onSaveChanges" /> -->
   </div>
@@ -29,7 +30,7 @@ import { PencilSquareIcon } from '@heroicons/vue/24/outline';
 import { onClickOutside } from '@vueuse/core';
 import type { PropType } from 'vue';
 import { computed, ref, toRefs } from 'vue';
-import BaseCard from '../BaseCard.vue';
+import BaseCard from '../UI/BaseCard.vue';
 
 const db = database()
 
